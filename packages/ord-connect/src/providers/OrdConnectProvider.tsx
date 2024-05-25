@@ -21,11 +21,11 @@ export enum Wallet {
   MAGICEDEN = "magiceden",
   LEATHER = "leather",
   OKX = "okx",
+  WIZZ = "wizz",
 }
 
 export interface BiAddress<T> {
   payments: T | null;
-  ordinals: T | null;
 }
 
 export type BiAddressString = BiAddress<string>;
@@ -33,7 +33,6 @@ export type BiAddressFormat = BiAddress<AddressFormat>;
 
 const EMPTY_BIADDRESS_OBJECT = {
   payments: null,
-  ordinals: null,
 };
 
 interface OrdConnectContextType {

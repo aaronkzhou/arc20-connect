@@ -12,6 +12,7 @@ const WALLET_TO_NAME: Record<Wallet, string> = {
   [Wallet.XVERSE]: "Xverse",
   [Wallet.LEATHER]: "Leather",
   [Wallet.OKX]: "OKX",
+  [Wallet.WIZZ]: "WIZZ",
 } as const;
 
 interface WalletButtonProp {
@@ -85,20 +86,20 @@ export function WalletButton({
             {subtitle}
           </span>
         </div>
-        {connectedWallet === wallet && connectedAddress.ordinals ? (
+        {connectedWallet === wallet && connectedAddress.payments ? (
           <div className="wallet-option-connected-address">
             {renderAvatar ? (
-              renderAvatar(connectedAddress.ordinals, "small")
+              renderAvatar(connectedAddress.payments, "small")
             ) : (
               <Avatar
                 size={16}
                 variant="beam"
-                name={connectedAddress.ordinals}
+                name={connectedAddress.payments}
                 colors={["#1C2DCB", "#F226B8"]}
               />
             )}
             <span className="label">
-              {truncateMiddle(connectedAddress.ordinals)}
+              {truncateMiddle(connectedAddress.payments)}
             </span>
           </div>
         ) : null}

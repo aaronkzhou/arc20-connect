@@ -49,23 +49,23 @@ function TestControls() {
 
     const signed = await sign(
       address.payments,
-      "cHNidP8BAFICAAAAARXJoLPdXB0nA98DsK0PaC5ABbmJbxKPAZ+WUvKJYgieAAAAAAD/////AaRCDwAAAAAAFgAUQQLeNoYbzPdxCaEZpQnxIuzjchIAAAAAAAEBH2QAAAAAAAAAFgAUQQLeNoYbzPdxCaEZpQnxIuzjchIBAwSDAAAAAAA=",
+      "cHNidP8BAHsCAAAAAhuVpgVRdOxkuC7wW2rvw4800OVxl+QCgezYKHtCYN7GAQAAAAD/////HPTH9wFgyf4iQ2xw4DIDP8t9IjCePWDjhqgs8fXvSIcAAAAAAP////8BigIAAAAAAAAWABTHctb5VULhHvEejvx8emmDCtOKBQAAAAAAAAAA",
       { extractTx: false },
     );
-    console.log(signed);
+    console.log("pdst", signed);
   }, [address.payments, sign]);
 
   const handleSignMessage = useCallback(async () => {
-    if (!address.ordinals) {
+    if (!address.payments) {
       throw new Error("No payment address");
     }
 
     const signed = await signMsg(
-      address.ordinals,
+      address.payments,
       "Authenticate this message to access all the functionalities of Ordzaar. By using Ordzaar implies your consent to our user agreement.\n\nDomain: ordzaar.com\n\nBlockchain: Bitcoin \n\nAccount:\ntb1q82avu57rf0xe4wgrkudwa0ewrh7mfrsejkum3h\n\nNonce: 4NfCJ3FEDQ",
     );
-    console.log(signed);
-  }, [address.ordinals, signMsg]);
+    console.log("msg", signed);
+  }, [address.payments, signMsg]);
 
   return (
     <div className="controls">
@@ -85,8 +85,8 @@ function TestControls() {
       </div>
       <div>
         {wallet ? <p>Wallet: {wallet}</p> : null}
-        {address?.ordinals ? (
-          <p>Connected Address: {address.ordinals ?? ""}</p>
+        {address?.payments ? (
+          <p>Connected Address: {address.payments ?? ""}</p>
         ) : null}
         {typeof balance === "number" || isLoadingBalance ? (
           <p>

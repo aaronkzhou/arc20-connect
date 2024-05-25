@@ -1,20 +1,18 @@
-# ord-connect
+# arc20-connect
 
 <img src="preview_wallets.png" alt="Preview" width="420" height="525"/>
 
 ## Introduction
 
-**ord-connect** is a React component library that allows you to easily integrate Bitcoin Ordinals & Inscriptions via [Sado Protocol Connections](https://sado.space) with your decentralized application (dApp). We stand as the pioneering walletkit to support ordinal-aware transactions, ensuring you never inadvertently spend a rare ordinal!
+**arc20-connect** is a React component library that allows you to easily integrate Bitcoin atomicals & Inscriptions via [Sado Protocol Connections](https://sado.space) with your decentralized application (dApp). We stand as the pioneering walletkit to support arc20-aware transactions.
 
 ## Wallet Feature Support
 
-| Wallet     | Ordinal-safety | Inscription-safety |
-| ---------- | -------------- | ------------------ |
-| Unisat     | ✅             | ✅                 |
-| Xverse     | ✅             | ✅                 |
-| Magic Eden | ✅             | ✅                 |
-| Leather    | ✅             | ✅                 |
-| OKX        | ✅             | ✅                 |
+| Wallet | Ordinal-safety | Inscription-safety |
+| ------ | -------------- | ------------------ |
+| Unisat | ✅             | ✅                 |
+| Wizz   | ✅             | ✅                 |
+| OKX    | ✅             | ✅                 |
 
 ## Quick Start
 

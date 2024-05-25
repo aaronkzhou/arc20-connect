@@ -8,6 +8,7 @@ import LogoutIcon from "../../assets/logout.svg";
 import MagicEdenIcon from "../../assets/magiceden-wallet.svg";
 import OKXWalletIcon from "../../assets/okx-wallet.svg";
 import UnisatWalletIcon from "../../assets/unisat-wallet.svg";
+import WizzWalletIcon from "../../assets/wizz.svg";
 import XverseWalletIcon from "../../assets/xverse-wallet.svg";
 import { useOrdConnect, Wallet } from "../../providers/OrdConnectProvider";
 import { truncateMiddle } from "../../utils/text-helper";
@@ -18,6 +19,7 @@ const WALLET_TO_ICON: Record<Wallet, string> = {
   [Wallet.XVERSE]: XverseWalletIcon,
   [Wallet.LEATHER]: LeatherWalletIcon,
   [Wallet.OKX]: OKXWalletIcon,
+  [Wallet.WIZZ]: WizzWalletIcon,
 } as const;
 
 interface PostConnectButtonProp {

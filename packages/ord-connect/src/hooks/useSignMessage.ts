@@ -28,10 +28,7 @@ export function useSignMessage(): {
           throw new Error("No wallet is connected");
         }
 
-        if (
-          walletAddresses.ordinals !== address &&
-          walletAddresses.payments !== address
-        ) {
+        if (walletAddresses.payments !== address) {
           throw new Error("Address supplied is not connected address");
         }
 
@@ -41,8 +38,8 @@ export function useSignMessage(): {
           message,
           network,
           format:
-            walletAddresses.ordinals === address
-              ? format.ordinals!
+            walletAddresses.payments === address
+              ? format.payments!
               : format.payments!,
         });
 

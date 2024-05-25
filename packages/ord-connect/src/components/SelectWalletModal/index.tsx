@@ -4,18 +4,14 @@ import {
   BrowserWalletNotInstalledError,
   BrowserWalletRequestCancelledByUserError,
 } from "@ordzaar/ordit-sdk";
-import { getAddresses as getLeatherAddresses } from "@ordzaar/ordit-sdk/leather";
-import { getAddresses as getMagicEdenAddress } from "@ordzaar/ordit-sdk/magiceden";
 import { getAddresses as getOKXAddresses } from "@ordzaar/ordit-sdk/okx";
 import { getAddresses as getUnisatAddresses } from "@ordzaar/ordit-sdk/unisat";
-import { getAddresses as getXverseAddresses } from "@ordzaar/ordit-sdk/xverse";
 
 import CloseModalIcon from "../../assets/close-modal.svg";
-import LeatherWalletIcon from "../../assets/leather-wallet.svg";
-import MagicEdenWalletIcon from "../../assets/magiceden-wallet.svg";
 import OKXWalletIcon from "../../assets/okx-wallet.svg";
 import UnisatWalletIcon from "../../assets/unisat-wallet.svg";
-import XverseWalletIcon from "../../assets/xverse-wallet.svg";
+import WizzWalletIcon from "../../assets/wizz.svg";
+import { getAddresses as getWizzAddresses } from "../../lib/wizz";
 import { useOrdConnect, Wallet } from "../../providers/OrdConnectProvider";
 import { isMobileUserAgent } from "../../utils/mobile-detector";
 import { waitForUnisatExtensionReady } from "../../utils/unisat";
@@ -34,6 +30,7 @@ const WALLET_CHROME_EXTENSION_URL: Record<Wallet, string> = {
   [Wallet.XVERSE]: "https://www.xverse.app/download",
   [Wallet.LEATHER]: "https://leather.io/install-extension",
   [Wallet.OKX]: "https://www.okx.com/web3",
+  [Wallet.WIZZ]: "https://wizzwallet.io",
 };
 
 export function SelectWalletModal({
@@ -78,77 +75,6 @@ export function SelectWalletModal({
     [disconnectWallet],
   );
 
-  const onConnectMagicEdenWallet = useCallback(async () => {
-    if (network === "testnet") {
-      const unsupportedNetworkError = new Error(
-        "Magic Eden wallet is not supported on testnet",
-      );
-      onError(Wallet.MAGICEDEN, unsupportedNetworkError);
-      return false;
-    }
-
-    try {
-      setErrorMessage("");
-      const magicEdenAddresses = await getMagicEdenAddress(network);
-      if (!magicEdenAddresses || magicEdenAddresses.length < 1) {
-        disconnectWallet();
-        throw new Error("Magic Eden via Ordit returned no addresses.");
-      }
-
-      // Magic Eden provides a segwit address by default for sending and receiving payments
-      // Imported xverse wallets will return a p2sh address for payments by default instead
-      const paymentAddress = magicEdenAddresses.find(
-        (walletAddress) =>
-          walletAddress.format === "segwit" ||
-          walletAddress.format === "p2sh-p2wpkh",
-      );
-
-      if (!paymentAddress) {
-        throw new Error(
-          "Magic Eden via Ordit did not return a P2SH or Segwit address.",
-        );
-      }
-
-      const ordinalsAddress = magicEdenAddresses.find(
-        (walletAddress) => walletAddress.format === "taproot",
-      );
-
-      if (!ordinalsAddress) {
-        throw new Error(
-          "Magic Eden via Ordit did not return a Taproot address.",
-        );
-      }
-
-      updateAddress({
-        ordinals: ordinalsAddress.address,
-        payments: paymentAddress.address,
-      });
-      updatePublicKey({
-        ordinals: ordinalsAddress.publicKey,
-        payments: paymentAddress.publicKey,
-      });
-      updateWallet(Wallet.MAGICEDEN);
-      updateFormat({
-        ordinals: ordinalsAddress.format,
-        payments: paymentAddress.format,
-      });
-      closeModal();
-      return true;
-    } catch (err) {
-      onError(Wallet.MAGICEDEN, err as Error);
-      return false;
-    }
-  }, [
-    closeModal,
-    disconnectWallet,
-    network,
-    onError,
-    updateAddress,
-    updateFormat,
-    updatePublicKey,
-    updateWallet,
-  ]);
-
   const onConnectUnisatWallet = useCallback(
     async ({ readOnly }: { readOnly?: boolean } = {}) => {
       try {
@@ -164,16 +90,13 @@ export function SelectWalletModal({
         // Unisat only returns one wallet by default
         const unisatWallet = unisat[0];
         updateAddress({
-          ordinals: unisatWallet.address,
           payments: unisatWallet.address,
         });
         updatePublicKey({
-          ordinals: unisatWallet.publicKey,
           payments: unisatWallet.publicKey,
         });
         updateWallet(Wallet.UNISAT);
         updateFormat({
-          ordinals: unisatWallet.format,
           payments: unisatWallet.format,
         });
 
@@ -196,121 +119,49 @@ export function SelectWalletModal({
     ],
   );
 
-  const onConnectXverseWallet = useCallback(async () => {
-    try {
-      setErrorMessage("");
-      const xverse = await getXverseAddresses(network);
-      // P2SH-P2WPKH = BTC
-      // Taproot = Ordinals / Inscriptions
-      if (!xverse || xverse.length < 1) {
-        disconnectWallet();
-        throw new Error("Xverse via Ordit returned no addresses.");
+  const onConnectWizzWallet = useCallback(
+    async ({ readOnly }: { readOnly?: boolean } = {}) => {
+      try {
+        // Reset error message
+        setErrorMessage("");
+        const wizz = await getWizzAddresses(network, readOnly);
+
+        if (!wizz || wizz.length < 1) {
+          disconnectWallet();
+          throw new Error("Unisat via Ordit returned no addresses.");
+        }
+
+        // Unisat only returns one wallet by default
+        const wizzWallet = wizz[0];
+        updateAddress({
+          payments: wizzWallet.address,
+        });
+        updatePublicKey({
+          payments: wizzWallet.publicKey,
+        });
+        updateWallet(Wallet.WIZZ);
+        updateFormat({
+          payments: wizzWallet.format,
+        });
+
+        closeModal();
+        return true;
+      } catch (err) {
+        onError(Wallet.WIZZ, err as Error);
+        return false;
       }
-
-      // Xverse provides a nested segwit address by default for sending and receiving payments
-      // Ledger wallets on Xverse will return a native segwit address for payments instead
-      const paymentAddress = xverse.find(
-        (walletAddress) =>
-          walletAddress.format === "p2sh-p2wpkh" ||
-          walletAddress.format === "segwit",
-      );
-
-      if (!paymentAddress) {
-        throw new Error(
-          "Xverse via Ordit did not return a P2SH or Segwit address.",
-        );
-      }
-
-      const ordinalsAddress = xverse.find(
-        (walletAddress) => walletAddress.format === "taproot",
-      );
-
-      if (!ordinalsAddress) {
-        throw new Error("Xverse via Ordit did not return a Taproot address.");
-      }
-
-      updateAddress({
-        ordinals: ordinalsAddress.address,
-        payments: paymentAddress.address,
-      });
-      updatePublicKey({
-        ordinals: ordinalsAddress.publicKey,
-        payments: paymentAddress.publicKey,
-      });
-      updateWallet(Wallet.XVERSE);
-      updateFormat({
-        ordinals: ordinalsAddress.format,
-        payments: paymentAddress.format,
-      });
-      closeModal();
-      return true;
-    } catch (err) {
-      onError(Wallet.XVERSE, err as Error);
-      return false;
-    }
-  }, [
-    closeModal,
-    disconnectWallet,
-    network,
-    onError,
-    updateAddress,
-    updateFormat,
-    updatePublicKey,
-    updateWallet,
-  ]);
-
-  const onConnectLeatherWallet = useCallback(async () => {
-    try {
-      setErrorMessage("");
-      const leather = await getLeatherAddresses(network);
-      if (!leather || leather.length < 1) {
-        disconnectWallet();
-        throw new Error("Leather via Ordit returned no addresses.");
-      }
-
-      const paymentAddress = leather.find(
-        (walletAddress) => walletAddress.format === "segwit",
-      );
-      if (!paymentAddress) {
-        throw new Error("Leather via Ordit did not return a Segwit address.");
-      }
-
-      const ordinalAddress = leather.find(
-        (walletAddress) => walletAddress.format === "taproot",
-      );
-      if (!ordinalAddress) {
-        throw new Error("Leather via Ordit did not return a Taproot address.");
-      }
-
-      updateAddress({
-        ordinals: ordinalAddress.address,
-        payments: paymentAddress.address,
-      });
-      updatePublicKey({
-        ordinals: ordinalAddress.publicKey,
-        payments: paymentAddress.publicKey,
-      });
-      updateWallet(Wallet.LEATHER);
-      updateFormat({
-        ordinals: ordinalAddress.format,
-        payments: paymentAddress.format,
-      });
-      closeModal();
-      return true;
-    } catch (err) {
-      onError(Wallet.LEATHER, err as Error);
-      return false;
-    }
-  }, [
-    closeModal,
-    disconnectWallet,
-    network,
-    onError,
-    updateAddress,
-    updateFormat,
-    updatePublicKey,
-    updateWallet,
-  ]);
+    },
+    [
+      closeModal,
+      disconnectWallet,
+      network,
+      onError,
+      updateAddress,
+      updateFormat,
+      updatePublicKey,
+      updateWallet,
+    ],
+  );
 
   const onConnectOKXWallet = useCallback(async () => {
     try {
@@ -323,16 +174,13 @@ export function SelectWalletModal({
 
       const okxWallet = okx[0];
       updateAddress({
-        ordinals: okxWallet.address,
         payments: okxWallet.address,
       });
       updatePublicKey({
-        ordinals: okxWallet.publicKey,
         payments: okxWallet.publicKey,
       });
       updateWallet(Wallet.OKX);
       updateFormat({
-        ordinals: okxWallet.format,
         payments: okxWallet.format,
       });
       closeModal();
@@ -384,6 +232,7 @@ export function SelectWalletModal({
       };
       connectToUnisatWalletOnReady();
     }
+
     return () => {
       isMounted = false;
       if (isConnectSuccessful) {
@@ -454,38 +303,17 @@ export function SelectWalletModal({
                       </>
                     )}
                     <WalletButton
-                      wallet={Wallet.XVERSE}
-                      subtitle="Available on Xverse app"
-                      onConnect={onConnectXverseWallet}
-                      icon={XverseWalletIcon}
+                      wallet={Wallet.WIZZ}
+                      subtitle="Coming soon on mobile browsing"
+                      onConnect={onConnectWizzWallet}
+                      icon={WizzWalletIcon}
                       setErrorMessage={setErrorMessage}
+                      isDisabled={isMobile} // disable unisat on mobile until it is supported
                       isMobileDevice={isMobile}
                       renderAvatar={renderAvatar}
                     />
                     {!isMobile && (
                       <>
-                        <hr className="horizontal-separator" />
-                        <WalletButton
-                          wallet={Wallet.MAGICEDEN}
-                          subtitle="Coming soon on mobile browsing"
-                          onConnect={onConnectMagicEdenWallet}
-                          icon={MagicEdenWalletIcon}
-                          setErrorMessage={setErrorMessage}
-                          isDisabled={isMobile}
-                          isMobileDevice={isMobile}
-                          renderAvatar={renderAvatar}
-                        />
-                        <hr className="horizontal-separator" />
-                        <WalletButton
-                          wallet={Wallet.LEATHER}
-                          subtitle="Coming soon on mobile browsing"
-                          onConnect={onConnectLeatherWallet}
-                          icon={LeatherWalletIcon}
-                          setErrorMessage={setErrorMessage}
-                          isDisabled={isMobile}
-                          isMobileDevice={isMobile}
-                          renderAvatar={renderAvatar}
-                        />
                         <hr className="horizontal-separator" />
                         <WalletButton
                           wallet={Wallet.OKX}

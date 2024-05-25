@@ -4,7 +4,6 @@ module.exports = {
   env: { browser: true, es2020: true },
   extends: [
     "eslint:recommended",
-    "plugin:react-hooks/recommended",
     "../../node_modules/@ordzaar/standard-web-linter",
   ],
   parser: "@typescript-eslint/parser",

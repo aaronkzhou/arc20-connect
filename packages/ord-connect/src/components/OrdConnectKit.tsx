@@ -40,9 +40,9 @@ export function OrdConnectKit({
       return null;
     }
 
-    return address?.ordinals ? (
+    return address?.payments ? (
       <PostConnectButton
-        address={address.ordinals}
+        address={address.payments}
         network={network}
         onViewProfile={onViewProfile}
         onChangeWallet={openModal}

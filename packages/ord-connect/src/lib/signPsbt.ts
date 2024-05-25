@@ -1,11 +1,10 @@
 import { Psbt } from "bitcoinjs-lib";
-import { signPsbt as signLeatherPsbt } from "@ordzaar/ordit-sdk/leather";
-import { signPsbt as signMagicEdenPsbt } from "@ordzaar/ordit-sdk/magiceden";
 import { signPsbt as signOKXPsbt } from "@ordzaar/ordit-sdk/okx";
 import { signPsbt as signUnisatPsbt } from "@ordzaar/ordit-sdk/unisat";
-import { signPsbt as signXversePsbt } from "@ordzaar/ordit-sdk/xverse";
 
 import { Network, Wallet } from "../providers/OrdConnectProvider";
+
+import { signPsbt as signWizzPsbt } from "./wizz";
 
 export interface SignPsbtOptionsParams {
   finalize?: boolean;
@@ -46,22 +45,6 @@ export default async function signPsbt({
   const getAllInputIndices = () =>
     psbt.data.inputs.map((value, index) => index);
 
-  if (wallet === Wallet.MAGICEDEN) {
-    const signedMagicEdenPsbt = await signMagicEdenPsbt(psbt, {
-      network,
-      inputsToSign: [
-        {
-          address,
-          signingIndexes: options?.signingIndexes ?? getAllInputIndices(),
-          sigHash: options?.sigHash,
-        },
-      ],
-      finalize,
-      extractTx,
-    });
-    return signedMagicEdenPsbt;
-  }
-
   if (wallet === Wallet.UNISAT) {
     const signedUnisatPsbt = await signUnisatPsbt(psbt, {
       finalize,
@@ -70,31 +53,12 @@ export default async function signPsbt({
     return signedUnisatPsbt;
   }
 
-  if (wallet === Wallet.XVERSE) {
-    const signedXversePsbt = await signXversePsbt(psbt, {
-      network,
-      inputsToSign: [
-        {
-          address,
-          signingIndexes: options?.signingIndexes ?? getAllInputIndices(), // If signingIndexes is not provided, just sign everything
-          sigHash: options?.sigHash,
-        },
-      ],
+  if (wallet === Wallet.WIZZ) {
+    const signedWizzPsbt = await signWizzPsbt(psbt, {
       finalize,
       extractTx,
     });
-    return signedXversePsbt;
-  }
-
-  if (wallet === Wallet.LEATHER) {
-    const signedLeatherPsbt = await signLeatherPsbt(psbt, {
-      network,
-      finalize,
-      extractTx,
-      allowedSighash: options?.sigHash ? [options?.sigHash] : [],
-      signAtIndexes: options?.signingIndexes ?? getAllInputIndices(), // If signingIndexes is not provided, just sign everything
-    });
-    return signedLeatherPsbt;
+    return signedWizzPsbt;
   }
 
   if (wallet === Wallet.OKX) {
