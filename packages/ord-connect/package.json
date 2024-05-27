@@ -1,6 +1,6 @@
 {
   "name": "arc20-connect",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "React component library for Bitcoin atomicals",
   "repository": "https://github.com/aaronkzhou/arc20-connect",
   "bugs": "https://github.com/aaronkzhou/arc20-connect/issues",

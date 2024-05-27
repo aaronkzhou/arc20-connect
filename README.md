@@ -21,19 +21,19 @@ Just two simple steps:
 1.  Add dependency:
 
     ```bash
-    pnpm install @ordzaar/ord-connect
+    pnpm install arc20-connect
     ```
 
 2.  Import ord-connect into your dApp:
 
     ```javascript
-    import { Network, OrdConnectProvider, OrdConnectKit } from "@ordzaar/ord-connect";
+    import { Network, ArcConnectProvider, ArcConnectKit } from "arc20-connect";
 
     export default function YourReactComponent() {
       return (
-        <OrdConnectProvider initialNetwork={Network.TESTNET}>
-          <OrdConnectKit />
-        </OrdConnectProvider>
+        <ArcConnectProvider initialNetwork={Network.TESTNET}>
+          <ArcConnectKit />
+        </ArcConnectProvider>
       );
     }
     ```
@@ -55,12 +55,12 @@ npm install -g pnpm
 To develop ord-connect, navigate to the ord-connect directory, install the necessary packages and serve the project:
 
 ```bash
-cd packages/ord-connect
+cd packages/arc20-connect
 pnpm install
 pnpm dev
 ```
 
-The sample playground component is located at `packages/ord-connect/src/main.tsx`.
+The sample playground component is located at `packages/arc20-connect/src/main.tsx`.
 
 Changes made to the code will be reflected immediately.
 
@@ -71,10 +71,10 @@ For inter-repo local testing:
 1. Link the global package to the local project:
 
    ```bash
-   pnpm link packages/ord-connect --global
+   pnpm link packages/arc20-connect --global
    ```
 
-2. `cd` to any repo of your choosing (e.g., ordzaar).
+2. `cd` to any repo of your choosing (e.g., arc20).
 
 3. The remaining steps are identical to [Quick Start](#quick-start).
 
