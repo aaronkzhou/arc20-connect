@@ -27,13 +27,13 @@ Just two simple steps:
 2.  Import ord-connect into your dApp:
 
     ```javascript
-    import { Network, ArcConnectProvider, ArcConnectKit } from "arc20-connect";
+    import { Network, OrdConnectProvider, OrdConnectKit } from "arc20-connect";
 
     export default function YourReactComponent() {
       return (
-        <ArcConnectProvider initialNetwork={Network.TESTNET}>
-          <ArcConnectKit />
-        </ArcConnectProvider>
+        <OrdConnectProvider initialNetwork={Network.TESTNET}>
+          <OrdConnectKit />
+        </OrdConnectProvider>
       );
     }
     ```
@@ -74,7 +74,7 @@ For inter-repo local testing:
    pnpm link packages/arc20-connect --global
    ```
 
-2. `cd` to any repo of your choosing (e.g., arc20).
+2. `cd` to any repo of your choosing (e.g., ordzaar).
 
 3. The remaining steps are identical to [Quick Start](#quick-start).
 
