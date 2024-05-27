@@ -13,6 +13,7 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 export enum Network {
   MAINNET = "mainnet",
   TESTNET = "testnet",
+  SIGNET = "signet",
 }
 
 export enum Wallet {
@@ -60,7 +61,6 @@ const ADDRESS = "address";
 const WALLET = "wallet";
 const PUBLIC_KEY = "publicKey";
 const FORMAT = "format";
-const NETWORK = "network";
 
 export type OrdConnectProviderProps = {
   initialNetwork: Network;
@@ -96,15 +96,11 @@ export function OrdConnectProvider({
   if (!initialNetwork) {
     throw new Error("Initial network cannot be empty");
   }
+  const [network, setNetwork] = useState(initialNetwork);
 
   const [address, setAddress] = useLocalStorage<BiAddressString>(
     ADDRESS,
     EMPTY_BIADDRESS_OBJECT,
-  );
-
-  const [network, setNetwork] = useLocalStorage<Network>(
-    NETWORK,
-    initialNetwork,
   );
 
   const [wallet, setWallet] = useLocalStorage<Wallet | null>(WALLET, null);
