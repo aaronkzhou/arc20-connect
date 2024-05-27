@@ -10,7 +10,11 @@ import OKXWalletIcon from "../../assets/okx-wallet.svg";
 import UnisatWalletIcon from "../../assets/unisat-wallet.svg";
 import WizzWalletIcon from "../../assets/wizz.svg";
 import XverseWalletIcon from "../../assets/xverse-wallet.svg";
-import { useOrdConnect, Wallet } from "../../providers/OrdConnectProvider";
+import {
+  Network,
+  useOrdConnect,
+  Wallet,
+} from "../../providers/OrdConnectProvider";
 import { truncateMiddle } from "../../utils/text-helper";
 
 const WALLET_TO_ICON: Record<Wallet, string> = {
@@ -30,6 +34,12 @@ interface PostConnectButtonProp {
   onDisconnectWallet?: () => void;
   renderAvatar?: (address: string, size: "large" | "small") => ReactNode;
 }
+
+const NETWORK_DISPLAY_NAME = {
+  [Network.MAINNET]: "Mainnet",
+  [Network.TESTNET]: "Testnet",
+  [Network.SIGNET]: "Signet",
+} as const;
 
 export function PostConnectButton({
   address,
@@ -71,7 +81,7 @@ export function PostConnectButton({
               <section className="network-container">
                 <div className="status-indicator" />
                 <p className="network">
-                  {network === "mainnet" ? "MainNet" : "TestNet"}
+                  {NETWORK_DISPLAY_NAME[network as Network] ?? network}
                 </p>
               </section>
             </section>
