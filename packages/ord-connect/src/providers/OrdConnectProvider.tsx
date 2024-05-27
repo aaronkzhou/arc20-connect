@@ -13,7 +13,6 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 export enum Network {
   MAINNET = "mainnet",
   TESTNET = "testnet",
-  SIGNET = "signet",
 }
 
 export enum Wallet {

@@ -38,7 +38,6 @@ interface PostConnectButtonProp {
 const NETWORK_DISPLAY_NAME = {
   [Network.MAINNET]: "Mainnet",
   [Network.TESTNET]: "Testnet",
-  [Network.SIGNET]: "Signet",
 } as const;
 
 export function PostConnectButton({

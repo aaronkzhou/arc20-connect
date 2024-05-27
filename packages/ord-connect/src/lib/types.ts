@@ -1,5 +1,5 @@
 export type AddressType = "p2pkh" | "p2sh" | "p2wsh" | "p2wpkh" | "p2tr";
-export type Network = "mainnet" | "testnet" | "regtest";
+export type Network = "mainnet" | "testnet";
 
 export type BrowserWalletNetwork = Extract<Network, "mainnet" | "testnet">;
 
