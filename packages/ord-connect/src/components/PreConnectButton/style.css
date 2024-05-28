@@ -16,6 +16,7 @@
 @media screen and (min-width: 768px) {
   .ord-connect-wallet-button {
     padding: 10px 24px;
+    cursor: pointer;
   }
 
   .ord-connect-wallet-button span::before {
