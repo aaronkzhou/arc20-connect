@@ -22,6 +22,7 @@ Just two simple steps:
 
     ```bash
     pnpm install arc20-connect
+    pnpm install vite-plugin-node-polyfills
     ```
 
 2.  Import ord-connect into your dApp:
@@ -36,6 +37,22 @@ Just two simple steps:
         </OrdConnectProvider>
       );
     }
+    ```
+
+3.  add nodePolyfills into your vite/turbo config:
+
+    ```javascript
+    export default defineConfig({
+      plugins: [
+        react(),
+        nodePolyfills({
+          globals: {
+            // required for ordit-sdk functionality
+            Buffer: true,
+          },
+        }),
+      ],
+    });
     ```
 
 ## Contribute
